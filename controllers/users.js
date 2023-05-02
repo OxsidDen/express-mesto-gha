@@ -7,7 +7,6 @@ const {
     default_error_message
 } = require ('../utils/utils')
 
-
 const getUsers = (req,res) => {
     User.find()
         .then(users => res.status(OK_STATUS_CODE).send({data: users}))
@@ -17,10 +16,15 @@ const getUsers = (req,res) => {
 const getUserById = (req,res) => {
     const { userId } = req.params;
     User.findById(userId)
-        .then(user => res.status(OK_STATUS_CODE).send({data: user}))
+        .then((user) => {
+            if(!user){
+                return res.status(NOT_FOUND_ERROR_CODE).send({message: "User by specified _id not found"});
+            }
+            return res.status(OK_STATUS_CODE).send({data: user})
+        })
         .catch((e) => {
             if(e.name == "CastError"){
-                return res.status(NOT_FOUND_ERROR_CODE).send({message: "User by specified _id not found"});
+                return res.status(INCORRECT_DATA_ERROR_CODE).send({message: "User by specified _id not found"});
             }
             res.status(DEFAULT_ERROR_CODE).send(default_error_message)
         })
