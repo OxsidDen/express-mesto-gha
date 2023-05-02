@@ -36,13 +36,13 @@ const deletCard = (req,res) => {
     Card.findByIdAndRemove(cardId)
         .then((card) => {
             if(!card){
-                return res.status(NOT_FOUND_ERROR_CODE).send({mesaage: "The card with the specified _id was not found"});
+                return res.status(NOT_FOUND_ERROR_CODE).send({message: "The card with the specified _id was not found"});
             }
             res.status(OK_STATUS_CODE).send({card})
         })
         .catch((e) => {
             if(e.name == "CastError"){
-                return res.status(INCORRECT_DATA_ERROR_CODE).send({mesaage: "Incorrect data was passed during card delete"});
+                return res.status(INCORRECT_DATA_ERROR_CODE).send({message: "Incorrect data was passed during card delete"});
             }
             res.status(DEFAULT_ERROR_CODE).send(default_error_message)
         })
