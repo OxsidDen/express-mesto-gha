@@ -34,7 +34,7 @@ const createUser = (req,res, next) => {
     bcrypt.hash(password,10)
         .then(hash => User.create({name, about, avatar, email, password: hash}))
         .then(user => res.status(OK_STATUS_CODE).send({data: user}))
-        .catch(next);
+        .catch(next)
 }
 
 const updateProfile = (req,res, next) => {

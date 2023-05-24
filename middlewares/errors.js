@@ -14,8 +14,7 @@ const errorMiddlewares = (err, req, res, next) => {
     if (err instanceof NotFoundError || err instanceof AuthorisationError || err instanceof AccessError) {
         const { message } = err;
         return res.status(err.type).send({ message });
-      }
-
+    }
     res.status(DEFAULT_ERROR_CODE).send(default_error_message)
 }
 

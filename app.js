@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const routes = require('./routes/routes');
 const { errorMiddlewares } = require('./middlewares/errors');
+const errorCelebrate = require('celebrate').errors;
 
 const app = express();
 const {PORT = 3000} = process.env;
@@ -13,10 +14,13 @@ const {PORT = 3000} = process.env;
 mogoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(routes);
+app.use(errorCelebrate())
 app.use(errorMiddlewares);
+
 
 app.use((err, req, res) => {
     const { statusCode = DEFAULT_ERROR_CODE, message } = err;
