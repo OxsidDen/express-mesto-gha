@@ -9,7 +9,6 @@ const default_error_message = {message:'An error occurred on the server'};
 
 const regex = /(https|http?:\/\/)(www)?([a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=])*#?$/;
 
-
 module.exports = {
     INCORRECT_DATA_ERROR_CODE,
     NOT_FOUND_ERROR_CODE,

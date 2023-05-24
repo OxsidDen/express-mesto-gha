@@ -1,12 +1,6 @@
 const { AccessError, NotFoundError } = require('../error/error');
 const Card = require('../models/card')
-const {
-    INCORRECT_DATA_ERROR_CODE,
-    NOT_FOUND_ERROR_CODE,
-    DEFAULT_ERROR_CODE,
-    OK_STATUS_CODE,
-    default_error_message
-} = require ('../utils/utils');
+const {OK_STATUS_CODE} = require ('../utils/utils');
 
 const getOwnerId = (req) => {
     return req.user._id;
@@ -42,19 +36,6 @@ const deletCard = async (req,res,next) => {
     } catch (err) {
         next(err)
     }
-    
-
-    // Card.findByIdAndRemove(cardId)
-    //     .then((card) => {
-    //         if(!card){
-    //             throw new NotFoundError("The card with the specified _id was not found");
-    //         }
-    //         if(owner != card.owner){
-    //             throw new AccessError("You cannot delete another user's card");
-    //         }
-    //         res.status(OK_STATUS_CODE).send({card})
-    //     })
-    //     .catch(next)
 }
 
 const putLike = (req,res, next) => {

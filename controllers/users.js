@@ -1,13 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {
-    INCORRECT_DATA_ERROR_CODE,
-    NOT_FOUND_ERROR_CODE,
-    DEFAULT_ERROR_CODE,
-    OK_STATUS_CODE,
-    default_error_message
-} = require ('../utils/utils');
+const {OK_STATUS_CODE} = require ('../utils/utils');
 const { NotFoundError , IncorrectDataError} = require('../error/error');
 const { NODE_ENV, JWT_SECRET } = process.env;
 

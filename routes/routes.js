@@ -12,7 +12,7 @@ routes.post('/signup',signupValidator, createUser);
 routes.use(auth);
 routes.use(userRouter);
 routes.use(cardsRouter);
-routes.use('*', (req, res, next) => {
+routes.use('*', (req, res) => {
     throw new NotFoundError('Page not found')
 });
 
