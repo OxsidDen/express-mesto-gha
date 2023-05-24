@@ -11,27 +11,21 @@ const getOwnerId = (req) => {
     return req.user._id;
 }
 
-const getCards = (req,res) => {
+const getCards = (req,res, next) => {
     Card.find()
         .then(cards => res.status(OK_STATUS_CODE).send(cards))
-        .catch(e =>  res.status(DEFAULT_ERROR_CODE).send(default_error_message))
+        .catch(next)
 }
 
-const postCard = (req,res) => {
+const postCard = (req,res, next) => {
     const {name, link} = req.body;
     const owner = getOwnerId(req)
     Card.create({name, link, owner})
         .then(card => res.status(OK_STATUS_CODE).send({data: card}))
-        .catch((e) => {
-            if(e.name == "ValidationError"){
-                return res.status(INCORRECT_DATA_ERROR_CODE).send({message: "Incorrect data was passed during card creation"});
-            }
-            res.status(DEFAULT_ERROR_CODE).send(default_error_message);
-
-        })
+        .catch(next)
 }
 
-const deletCard = (req,res) => {
+const deletCard = (req,res, next) => {
     const { cardId } = req.params;
     Card.findByIdAndRemove(cardId)
         .then((card) => {
@@ -40,15 +34,10 @@ const deletCard = (req,res) => {
             }
             res.status(OK_STATUS_CODE).send({card})
         })
-        .catch((e) => {
-            if(e.name == "CastError"){
-                return res.status(INCORRECT_DATA_ERROR_CODE).send({message: "Incorrect data was passed during card delete"});
-            }
-            res.status(DEFAULT_ERROR_CODE).send(default_error_message)
-        })
+        .catch(next)
 }
 
-const putLike = (req,res) => {
+const putLike = (req,res, next) => {
     const ownerId = getOwnerId(req)
     const { cardId } = req.params;
     Card.findByIdAndUpdate(cardId, { $addToSet: { likes: ownerId}}, {new: true})
@@ -58,15 +47,10 @@ const putLike = (req,res) => {
             }
             res.status(OK_STATUS_CODE).send({card})
         })
-        .catch((e) => {
-            if(e.name == "CastError"){
-                return res.status(INCORRECT_DATA_ERROR_CODE).send({message: "Incorrect data sent to like"});
-            }
-            res.status(DEFAULT_ERROR_CODE).send(default_error_message)
-        })
+        .catch(next)
 }
 
-const deletLike = (req,res) => {
+const deletLike = (req,res, next) => {
     const ownerId = getOwnerId(req)
     const { cardId } = req.params;
     Card.findByIdAndUpdate(cardId, { $pull: { likes: ownerId}}, {new: true})
@@ -76,12 +60,7 @@ const deletLike = (req,res) => {
             }
             res.status(OK_STATUS_CODE).send({card})
         })
-        .catch((e) => {
-            if(e.name == "CastError"){
-                return res.status(INCORRECT_DATA_ERROR_CODE).send({message: "Incorrect data was sent to remove the like"});
-            }
-            res.status(DEFAULT_ERROR_CODE).send(default_error_message)
-        })
+        .catch(next)
 }
 
 module.exports = {
