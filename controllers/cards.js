@@ -26,16 +26,35 @@ const postCard = (req,res, next) => {
         .catch(next)
 }
 
-const deletCard = (req,res, next) => {
+const deletCard = async (req,res,next) => {
     const { cardId } = req.params;
-    Card.findByIdAndRemove(cardId)
-        .then((card) => {
-            if(!card){
-                throw new AccessError("The card with the specified _id was not found");
-            }
-            res.status(OK_STATUS_CODE).send({card})
-        })
-        .catch(next)
+    const owner = getOwnerId(req)
+    try {
+        const card = await Card.findById(cardId)
+        if(!card){
+            throw new NotFoundError("The card with the specified _id was not found");
+        }
+        if(owner != card.owner){
+            throw new AccessError("You cannot delete another user's card");
+        }
+        const deletedCard = await Card.findByIdAndRemove(cardId)
+        res.status(OK_STATUS_CODE).send({card})
+    } catch (err) {
+        next(err)
+    }
+    
+
+    // Card.findByIdAndRemove(cardId)
+    //     .then((card) => {
+    //         if(!card){
+    //             throw new NotFoundError("The card with the specified _id was not found");
+    //         }
+    //         if(owner != card.owner){
+    //             throw new AccessError("You cannot delete another user's card");
+    //         }
+    //         res.status(OK_STATUS_CODE).send({card})
+    //     })
+    //     .catch(next)
 }
 
 const putLike = (req,res, next) => {
