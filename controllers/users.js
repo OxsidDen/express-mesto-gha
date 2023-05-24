@@ -54,9 +54,6 @@ const login = (req,res, next) => {
     const {email, password} = req.body;
     User.findUserByCredentials(email, password)
         .then((user) => {
-            if(!user){
-                throw new NotFoundError('User is not found');
-            }
             const token = jwt.sign({ _id: user._id },  NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret' , { expiresIn: "7d" });
             res.cookie('jwt', token, {maxAge: 3600000 * 24 * 7, httpOnly: true }); 
             res.status(OK_STATUS_CODE).send({_id: token})

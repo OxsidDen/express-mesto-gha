@@ -1,3 +1,4 @@
+const { AccessError, NotFoundError } = require('../error/error');
 const Card = require('../models/card')
 const {
     INCORRECT_DATA_ERROR_CODE,
@@ -30,7 +31,7 @@ const deletCard = (req,res, next) => {
     Card.findByIdAndRemove(cardId)
         .then((card) => {
             if(!card){
-                return res.status(NOT_FOUND_ERROR_CODE).send({message: "The card with the specified _id was not found"});
+                throw new AccessError("The card with the specified _id was not found");
             }
             res.status(OK_STATUS_CODE).send({card})
         })
@@ -43,7 +44,7 @@ const putLike = (req,res, next) => {
     Card.findByIdAndUpdate(cardId, { $addToSet: { likes: ownerId}}, {new: true})
         .then((card) => {
             if(!card){
-                return res.status(NOT_FOUND_ERROR_CODE).send({message: "Passed non-existent card _id"});
+                throw new NotFoundError("Passed non-existent card _id")
             }
             res.status(OK_STATUS_CODE).send({card})
         })
@@ -56,7 +57,7 @@ const deletLike = (req,res, next) => {
     Card.findByIdAndUpdate(cardId, { $pull: { likes: ownerId}}, {new: true})
         .then((card) => {
             if(!card){
-                return res.status(NOT_FOUND_ERROR_CODE).send({message: "Passed non-existent card _id"})
+                throw new NotFoundError("Passed non-existent card _id")
             }
             res.status(OK_STATUS_CODE).send({card})
         })
