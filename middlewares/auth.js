@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
-const { AuthorisationError } = require('../error/AuthorisationError');
+const { AuthorisationErr } = require('../error/AuthorisationError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const handleAuthError = () => {
-  throw new AuthorisationError('Authorization required');
+  throw new AuthorisationErr('Authorization required');
 };
 
 const auth = (req, res, next) => {

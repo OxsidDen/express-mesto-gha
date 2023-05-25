@@ -1,4 +1,4 @@
-const { ValidationError, DocumentNotFoundError } = require('mongoose').Error;
+const { ValidationError } = require('mongoose').Error;
 const { AccessErr } = require('../error/AccessError');
 const { NotFoundErr } = require('../error/NotFoundError');
 const { IncorrectDataErr } = require('../error/IncorrectDataError');
@@ -30,15 +30,16 @@ const deletCard = async (req, res, next) => {
   const owner = getOwnerId(req);
   try {
     const card = await Card.findById(cardId);
-    if (owner !== card.owner) {
-      throw new AccessErr('You cannot delete another user card');
+    if (!card) {
+      throw new NotFoundErr('The card with the specified _id was not found');
+    }
+    if (owner.toString() !== card.owner.toString()) {
+      throw new AccessErr("You cannot delete another user's card");
     }
     const deletedCard = await Card.findByIdAndRemove(cardId);
     res.status(OK_STATUS_CODE).send({ deletedCard });
   } catch (err) {
-    if (err instanceof DocumentNotFoundError) {
-      next(new NotFoundErr('The card with the specified _id was not found'));
-    } else next(err);
+    next(err);
   }
 };
 

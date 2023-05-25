@@ -4,7 +4,6 @@ const mogoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const errorCelebrate = require('celebrate').errors;
-const { DEFAULT_ERROR_CODE } = require('./utils/utils');
 const routes = require('./routes/routes');
 const { errorMiddlewares } = require('./middlewares/errors');
 
@@ -20,11 +19,6 @@ app.use(cookieParser());
 app.use(routes);
 app.use(errorCelebrate());
 app.use(errorMiddlewares);
-
-app.use((err, req, res) => {
-  const { statusCode = DEFAULT_ERROR_CODE, message } = err;
-  return res.status(DEFAULT_ERROR_CODE).send({ message: statusCode === DEFAULT_ERROR_CODE ? 'An error occurred on the server' : message });
-});
 
 app.listen(PORT, () => {
   console.log(`server started on port ${PORT}`);

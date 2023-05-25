@@ -4,8 +4,8 @@ const { ValidationError } = require('mongoose').Error;
 const User = require('../models/user');
 const { OK_STATUS_CODE } = require('../utils/utils');
 const { NotFoundErr } = require('../error/NotFoundError');
-const { AccessErr } = require('../error/AccessError');
 const { IncorrectDataErr } = require('../error/IncorrectDataError');
+const { ExistingError } = require('../error/ExistingError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -38,7 +38,7 @@ const createUser = (req, res, next) => {
     .then((user) => res.status(OK_STATUS_CODE).send({ data: user }))
     .catch((err) => {
       if (err.code === 11000) {
-        next(new AccessErr('User with this email is already registered'));
+        next(new ExistingError('User with this email is already registered'));
       } else if (err instanceof ValidationError) {
         next(new IncorrectDataErr('The entered data is not correct'));
       } else next(err);
@@ -66,13 +66,13 @@ const updateProfile = (req, res, next) => {
 };
 
 const updateAvatar = (req, res, next) => {
-  const { link } = req.body;
+  const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
-    { link },
+    { avatar },
     { new: true, runValidators: true },
   )
-    .then((avatar) => res.status(OK_STATUS_CODE).send({ data: avatar }))
+    .then((user) => res.status(OK_STATUS_CODE).send({ data: user }))
     .catch((err) => {
       if (err instanceof ValidationError) {
         next(new IncorrectDataErr('The entered data is not correct'));
